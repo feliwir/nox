@@ -1,12 +1,15 @@
 #include "MainWindow.hpp"
 #include <iostream>
+#include "Media.hpp"
 
 using namespace nox::gui;
 
 MainWindow::MainWindow()
 {
 	add(m_vbox);
-	create_menu();
+	createMenu();
+	m_hbox.add(m_flowBox);
+	m_hbox.add(m_previewArea);
 
 	set_title("MainMenu example");
 	resize(300, 300);
@@ -17,10 +20,10 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::create_menu()
+void MainWindow::createMenu()
 {
 	m_vbox.pack_start(m_menuBar, Gtk::PACK_SHRINK);
-	m_vbox.pack_end(m_scrolledWindow);
+	m_vbox.pack_end(m_hbox);
 
 	m_menuFile.set_label("File");
 	m_menuBar.append(m_menuFile);
@@ -67,7 +70,7 @@ void MainWindow::create_menu()
 
 	m_menuFileOpen.set_label("_Open");
 	m_menuFileOpen.set_use_underline(true);
-	m_menuFileOpen.signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_file_open));
+	m_menuFileOpen.signal_activate().connect(sigc::mem_fun(*this, &MainWindow::onFileOpen));
 
 	m_menuFileClose.set_label("_Close");
 	m_menuFileClose.set_use_underline(true);
@@ -118,12 +121,12 @@ void MainWindow::create_menu()
 		});
 }
 
-void MainWindow::on_button_clicked()
+void MainWindow::onButtonClicked()
 {
 	std::cout << "Hello World" << std::endl;
 }
 
-void MainWindow::on_file_open()
+void MainWindow::onFileOpen()
 {
 	Gtk::FileChooserDialog dialog("Please choose a file",
 		Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -158,6 +161,8 @@ void MainWindow::on_file_open()
 		//Notice that this is a std::string, not a Glib::ustring.
 		std::string filename = dialog.get_filename();
 		std::cout << "File selected: " << filename << std::endl;
+
+		auto media = std::make_shared<nox::core::Media>(filename);
 		break;
 	}
 	case(Gtk::RESPONSE_CANCEL):

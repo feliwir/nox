@@ -1,25 +1,27 @@
 #pragma once
 #include <gtkmm.h>
+#include "PreviewArea.hpp"
+#include "nox-gui_export.h"
 
 namespace nox::gui
 {
-	class MainWindow : public Gtk::Window
+    class NOX_GUI_EXPORT MainWindow : public Gtk::Window
 	{
 
 	public:
-		MainWindow();
+        MainWindow();
 		virtual ~MainWindow();
 
 	protected:
-        void create_menu();
+        void createMenu();
 
 		//Signal handlers:
-		virtual void on_button_clicked();
-        virtual void on_file_open();
+		virtual void onButtonClicked();
+        virtual void onFileOpen();
 
 		//Member widgets:
         Gtk::VBox m_vbox;
-        Gtk::ScrolledWindow m_scrolledWindow;
+        Gtk::HBox m_hbox;
         Gtk::MenuBar m_menuBar;
         Gtk::MenuItem m_menuFile;
         Gtk::MenuItem m_menuEdit;
@@ -47,5 +49,8 @@ namespace nox::gui
         Gtk::MenuItem m_menuEditDelete;
         Gtk::SeparatorMenuItem m_separator3;
         Gtk::MenuItem m_menuEditSelectAll;
+
+        nox::gui::PreviewArea m_previewArea;
+        Gtk::FlowBox m_flowBox;
 	};
 }

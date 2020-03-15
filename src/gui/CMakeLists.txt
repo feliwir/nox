@@ -31,6 +31,19 @@ list(APPEND GTK_LIBRARIES ${GOBJECT_LIBRARY})
 find_library(SIGC_LIBRARY sigc-2.0 REQUIRED)
 list(APPEND GTK_LIBRARIES ${SIGC_LIBRARY})
 
-add_library(nox-gui STATIC MainWindow.cpp MainWindow.hpp)
-target_include_directories(nox-gui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${GTK_INCLUDE_DIRS})
-target_link_libraries(nox-gui ${GTK_LIBRARIES} nox-core)
+
+
+include(GenerateExportHeader)
+add_library(nox-gui SHARED 
+    MainWindow.cpp MainWindow.hpp
+    PreviewArea.cpp PreviewArea.hpp)
+generate_export_header(nox-gui)
+
+target_include_directories(nox-gui PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR} 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${GTK_INCLUDE_DIRS})
+
+target_link_libraries(nox-gui
+    nox-core
+    ${GTK_LIBRARIES})

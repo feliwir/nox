@@ -3,10 +3,12 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
 include(GenerateExportHeader)
-add_library(nox-core SHARED 
+add_library(nox-core SHARED
+	DXTextureInterop.cpp DXTextureInterop.hpp
 	IStream.hpp
+	ITextureInterop.hpp
 	Media.cpp Media.hpp
-	TextureBinder.cpp TextureBinder.hpp
+	Texture.cpp Texture.hpp
 	VideoStream.cpp VideoStream.hpp)
 generate_export_header(nox-core)
 

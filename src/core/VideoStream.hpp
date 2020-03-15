@@ -1,5 +1,6 @@
 #pragma once
 #include "IStream.hpp"
+#include "ITextureInterop.hpp"
 
 namespace nox::core
 {
@@ -18,6 +19,8 @@ namespace nox::core
 			AVCodecContext* ctx,
 			const AVPixelFormat* pix_fmts);
 		bool InitializeHardwareDevice();
+		// Derived from IStream
+		virtual void Process(AVPacket& pkt) override;
 
 		// Basic AVCodec members
 		AVCodec* m_codec;
@@ -28,8 +31,6 @@ namespace nox::core
 		static AVHWDeviceType m_hwDeviceType;
 		AVPixelFormat m_hwPixelFormat;
 		bool m_usingHwDecode;
-
-		// Geerbt über IStream
-		virtual void Process(AVPacket& pkt) override;
+		std::unique_ptr<ITextureInterop> m_texInterop;
 	};
 }

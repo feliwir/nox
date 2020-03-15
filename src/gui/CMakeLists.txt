@@ -36,7 +36,8 @@ list(APPEND GTK_LIBRARIES ${SIGC_LIBRARY})
 include(GenerateExportHeader)
 add_library(nox-gui SHARED 
     MainWindow.cpp MainWindow.hpp
-    PreviewArea.cpp PreviewArea.hpp)
+    PreviewArea.cpp PreviewArea.hpp
+    Timeline.cpp Timeline.hpp)
 generate_export_header(nox-gui)
 
 target_include_directories(nox-gui PUBLIC

@@ -1,6 +1,6 @@
 #include "VideoStream.hpp"
 #include "HWUtil.hpp"
-#include "TextureBinder.hpp"
+#include "DXTextureInterop.hpp"
 #include <functional>
 #include <iostream>
 
@@ -97,6 +97,13 @@ bool nox::core::VideoStream::InitializeHardwareDevice()
 
 	}
 	m_codecCtx->hw_device_ctx = av_buffer_ref(m_hwDeviceCtx);
+
+	switch (m_hwDeviceType)
+	{
+	case AV_HWDEVICE_TYPE_D3D11VA:
+		m_texInterop = std::make_unique<DXTextureInterop>();
+		break;
+	}
 	return true; 
 }
 
@@ -129,9 +136,7 @@ void nox::core::VideoStream::Process(AVPacket& pkt)
 			std::cerr << "Error while decoding" << std::endl;
 			//ERROR
 		}
-		AVHWFramesContext* fctx = (AVHWFramesContext*)frame->hw_frames_ctx->data;
-		std::cout << fctx->width << "-" << fctx->height;
-		int tex = TextureBinder::GetGLTexture(fctx);
-		
+		auto fctx = (AVHWFramesContext*)frame->hw_frames_ctx->data;
+		m_texInterop->Process(fctx);		
 	}
 }

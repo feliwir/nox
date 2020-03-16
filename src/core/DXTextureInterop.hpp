@@ -21,6 +21,8 @@ namespace nox::core
 		virtual std::shared_ptr<Texture> GetTexture() override;
 
 	protected:
+		void Initialize(AVD3D11VAFramesContext* fctx);
+
 		ID3D11Device* m_device;
 		HANDLE m_wglDXDevice;
 		HANDLE m_glInteropTexture;

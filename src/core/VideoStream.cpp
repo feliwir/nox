@@ -9,20 +9,42 @@ AVHWDeviceType nox::core::VideoStream::m_hwDeviceType = AV_HWDEVICE_TYPE_D3D11VA
 AVPixelFormat nox::core::VideoStream::GetHardwareFormat(AVCodecContext* ctx,
 	const AVPixelFormat* pix_fmts)
 {
+	AVPixelFormat selected = AV_PIX_FMT_NONE;
 	VideoStream* video = (VideoStream*)ctx->opaque;
 	const enum AVPixelFormat* p;
+	AVBufferRef* new_frames_ctx = NULL;
 
 	for (p = pix_fmts; *p != -1; p++) 
 	{
 		if (*p == video->m_hwPixelFormat)
-			return *p;
+		{
+			if (avcodec_get_hw_frames_parameters(ctx, video->m_hwDeviceCtx, *p, &new_frames_ctx) < 0)
+			{
+				break;
+			}
+			ctx->hw_frames_ctx = av_buffer_ref(new_frames_ctx);
+			selected = *p;
+			break;
+		}
 	}
 
-	video->m_usingHwDecode = false;
-	AVPixelFormat fallback = avcodec_default_get_format(ctx, pix_fmts);
+	if (selected == AV_PIX_FMT_NONE)
+	{
+		video->m_usingHwDecode = false;
+		AVPixelFormat fallback = avcodec_default_get_format(ctx, pix_fmts);
 
-	std::cerr << "Failed to get HW surface format.\n";
-	return fallback;
+		std::cerr << "Failed to get HW surface format.\n";
+	}
+	else
+	{
+		if (selected == AV_PIX_FMT_D3D11)
+		{
+			auto fctx = (AVHWFramesContext*)ctx->hw_frames_ctx->data;
+			auto hwctx = static_cast<AVD3D11VAFramesContext*>(fctx->hwctx);
+			hwctx->MiscFlags = D3D11_RESOURCE_MISC_SHARED_NTHANDLE | D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX;
+		}
+	}
+	return selected;
 }
 
 nox::core::VideoStream::VideoStream(AVStream*& stream) : IStream(stream), 

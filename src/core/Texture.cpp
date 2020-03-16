@@ -11,3 +11,8 @@ nox::core::Texture::~Texture()
 	glDeleteTextures(1, &m_handle);
 	m_handle = 0;
 }
+
+void nox::core::Texture::Bind() const
+{
+	glBindTexture(GL_TEXTURE_2D, m_handle);
+}

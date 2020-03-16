@@ -13,6 +13,8 @@ namespace nox::core
 		{
 			return m_handle;
 		}
+
+		void Bind() const;
 	protected:
 		GLuint m_handle;
 	};

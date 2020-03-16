@@ -11,7 +11,7 @@ MainWindow::MainWindow()
 	m_hbox.add(m_flowBox);
 	m_hbox.add(m_previewArea);
 
-	set_title("MainMenu example");
+	set_title("Nox VideoEditor");
 	resize(300, 300);
 	show_all();
 }

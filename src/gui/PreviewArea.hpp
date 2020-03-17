@@ -7,12 +7,12 @@ class PreviewArea : public Gtk::GLArea
 {
    public:
     PreviewArea();
-    virtual ~PreviewArea();
+    ~PreviewArea() override;
 
    protected:
-    virtual void on_realize() override;
-    virtual void on_unrealize() override;
-    virtual bool on_render(const Glib::RefPtr<Gdk::GLContext>& context);
+    void on_realize() override;
+    void on_unrealize() override;
+    bool on_render(const Glib::RefPtr<Gdk::GLContext>& context) override;
 
    private:
     sigc::connection m_realizeConn;

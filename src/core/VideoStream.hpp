@@ -10,16 +10,16 @@ class VideoStream : public IStream
     VideoStream(AVStream*& stream);
     ~VideoStream();
 
-    virtual float GetDuration() override;
-    virtual float GetPosition() override;
-    virtual StreamType GetType() override;
+    float GetDuration() override;
+    float GetPosition() override;
+    StreamType GetType() override;
 
    protected:
     static AVPixelFormat GetHardwareFormat(AVCodecContext* ctx,
                                            const AVPixelFormat* pix_fmts);
     bool InitializeHardwareDevice();
     // Derived from IStream
-    virtual void Process(AVPacket& pkt) override;
+    void Process(AVPacket& pkt) override;
 
     // Basic AVCodec members
     AVCodec* m_codec;

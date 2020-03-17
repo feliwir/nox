@@ -18,7 +18,7 @@ MainWindow::MainWindow()
     show_all();
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow() = default;
 
 void MainWindow::createMenu()
 {

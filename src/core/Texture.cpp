@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 
 nox::core::Texture::Texture()
-    : m_handle(0)
+
 {
     glGenTextures(1, &m_handle);
 }

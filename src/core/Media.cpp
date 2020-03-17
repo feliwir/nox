@@ -7,11 +7,11 @@ nox::core::Media::Media(std::string_view filename)
     m_formatCtx = avformat_alloc_context();
 
     // Open video file
-    if (avformat_open_input(&m_formatCtx, filename.data(), NULL, NULL) != 0)
+    if (avformat_open_input(&m_formatCtx, filename.data(), nullptr, nullptr) != 0)
         return; // Couldn't open file
 
     // Retrieve stream information
-    if (avformat_find_stream_info(m_formatCtx, NULL) < 0)
+    if (avformat_find_stream_info(m_formatCtx, nullptr) < 0)
         return; // Couldn't find stream information
 
     // Dump information about file onto standard error

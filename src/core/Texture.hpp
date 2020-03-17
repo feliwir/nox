@@ -14,6 +14,6 @@ class Texture
     void Bind() const;
 
    protected:
-    GLuint m_handle;
+    GLuint m_handle{0};
 };
 } // namespace nox::core

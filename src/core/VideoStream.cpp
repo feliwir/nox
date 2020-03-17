@@ -18,9 +18,9 @@ AVPixelFormat nox::core::VideoStream::GetHardwareFormat(
     const AVPixelFormat* pix_fmts)
 {
     AVPixelFormat selected = AV_PIX_FMT_NONE;
-    VideoStream* video = (VideoStream*)ctx->opaque;
+    auto* video = (VideoStream*)ctx->opaque;
     const enum AVPixelFormat* p;
-    AVBufferRef* new_frames_ctx = NULL;
+    AVBufferRef* new_frames_ctx = nullptr;
 
     for (p = pix_fmts; *p != -1; p++)
     {
@@ -102,7 +102,7 @@ nox::core::VideoStream::VideoStream(AVStream*& stream)
     if (!InitializeHardwareDevice())
         return;
 
-    if ((ret = avcodec_open2(m_codecCtx, m_codec, NULL)) < 0)
+    if ((ret = avcodec_open2(m_codecCtx, m_codec, nullptr)) < 0)
     {
     }
 }
@@ -132,7 +132,7 @@ bool nox::core::VideoStream::InitializeHardwareDevice()
 {
     int err = 0;
 
-    if ((err = av_hwdevice_ctx_create(&m_hwDeviceCtx, m_hwDeviceType, NULL, NULL,
+    if ((err = av_hwdevice_ctx_create(&m_hwDeviceCtx, m_hwDeviceType, nullptr, nullptr,
                                       0)) < 0)
     {
         std::cerr << "Failed to create specified HW device." << std::endl;
@@ -153,7 +153,7 @@ bool nox::core::VideoStream::InitializeHardwareDevice()
 
 void nox::core::VideoStream::Process(AVPacket& pkt)
 {
-    AVFrame* frame = NULL;
+    AVFrame* frame = nullptr;
     int ret = 0;
 
     ret = avcodec_send_packet(m_codecCtx, &pkt);

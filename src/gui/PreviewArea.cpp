@@ -15,7 +15,7 @@ nox::gui::PreviewArea::PreviewArea()
     set_has_window(false);
 }
 
-nox::gui::PreviewArea::~PreviewArea() {}
+nox::gui::PreviewArea::~PreviewArea() = default;
 
 void nox::gui::PreviewArea::on_realize()
 {

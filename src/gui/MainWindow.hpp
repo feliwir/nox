@@ -10,7 +10,7 @@ class NOX_GUI_EXPORT MainWindow : public Gtk::Window
 {
    public:
     MainWindow();
-    virtual ~MainWindow();
+    ~MainWindow() override;
 
    protected:
     void createMenu();

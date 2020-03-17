@@ -3,19 +3,17 @@
 
 namespace nox::core
 {
-	class Texture
-	{
-	public:
-		Texture();
-		~Texture();
+class Texture
+{
+   public:
+    Texture();
+    ~Texture();
 
-		inline GLuint GetHandle() const
-		{
-			return m_handle;
-		}
+    inline GLuint GetHandle() const { return m_handle; }
 
-		void Bind() const;
-	protected:
-		GLuint m_handle;
-	};
-}
+    void Bind() const;
+
+   protected:
+    GLuint m_handle;
+};
+} // namespace nox::core

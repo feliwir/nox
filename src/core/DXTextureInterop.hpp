@@ -10,22 +10,22 @@ extern "C"
 
 namespace nox::core
 {
-	class DXTextureInterop : public ITextureInterop
-	{
-	public:
-		DXTextureInterop();
+class DXTextureInterop : public ITextureInterop
+{
+   public:
+    DXTextureInterop();
 
-		// Derived from ITextureInterop
-		virtual bool IsValid() override;
-		virtual void Process(AVHWFramesContext* hwFramesContext) override;
-		virtual std::shared_ptr<Texture> GetTexture() override;
+    // Derived from ITextureInterop
+    virtual bool IsValid() override;
+    virtual void Process(AVHWFramesContext* hwFramesContext) override;
+    virtual std::shared_ptr<Texture> GetTexture() override;
 
-	protected:
-		void Initialize(AVD3D11VAFramesContext* fctx);
+   protected:
+    void Initialize(AVD3D11VAFramesContext* fctx);
 
-		ID3D11Device* m_device;
-		HANDLE m_wglDXDevice;
-		HANDLE m_glInteropTexture;
-		std::shared_ptr<Texture> m_texture;
-	};
-}
+    ID3D11Device* m_device;
+    HANDLE m_wglDXDevice;
+    HANDLE m_glInteropTexture;
+    std::shared_ptr<Texture> m_texture;
+};
+} // namespace nox::core

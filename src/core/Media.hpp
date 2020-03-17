@@ -1,9 +1,10 @@
 #pragma once
+#include <memory>
 #include <string_view>
 #include <vector>
-#include <memory>
-#include "nox-core_export.h"
+
 #include "IStream.hpp"
+#include "nox-core_export.h"
 
 extern "C"
 {
@@ -13,16 +14,17 @@ extern "C"
 
 namespace nox::core
 {
-	class NOX_CORE_EXPORT Media
-	{
-	public:
-		Media(std::string_view filename);
-		~Media();
+class NOX_CORE_EXPORT Media
+{
+   public:
+    Media(std::string_view filename);
+    ~Media();
 
-		bool IsValid();
-		void Decode();
-	private:
-		AVFormatContext* m_formatCtx = nullptr;
-		std::vector<std::shared_ptr<IStream>> m_streams;
-	};
-}
+    bool IsValid();
+    void Decode();
+
+   private:
+    AVFormatContext* m_formatCtx = nullptr;
+    std::vector<std::shared_ptr<IStream>> m_streams;
+};
+} // namespace nox::core

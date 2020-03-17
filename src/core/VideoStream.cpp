@@ -1,10 +1,15 @@
 #include "VideoStream.hpp"
 #include "HWUtil.hpp"
-#include "DXTextureInterop.hpp"
+#include "Platform.hpp"
 #include <functional>
 #include <iostream>
-
+#ifdef NOX_PLATFORM_WIN
+#include "DXTextureInterop.hpp"
 AVHWDeviceType nox::core::VideoStream::m_hwDeviceType = AV_HWDEVICE_TYPE_D3D11VA;
+#else
+AVHWDeviceType nox::core::VideoStream::m_hwDeviceType = AV_HWDEVICE_TYPE_VDPAU;
+#endif
+
 
 AVPixelFormat nox::core::VideoStream::GetHardwareFormat(AVCodecContext* ctx,
 	const AVPixelFormat* pix_fmts)
@@ -37,12 +42,16 @@ AVPixelFormat nox::core::VideoStream::GetHardwareFormat(AVCodecContext* ctx,
 	}
 	else
 	{
+		#ifdef NOX_PLATFORM_WIN
 		if (selected == AV_PIX_FMT_D3D11)
 		{
 			auto fctx = (AVHWFramesContext*)ctx->hw_frames_ctx->data;
 			auto hwctx = static_cast<AVD3D11VAFramesContext*>(fctx->hwctx);
 			hwctx->MiscFlags = D3D11_RESOURCE_MISC_SHARED_NTHANDLE | D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX;
 		}
+		#else
+
+		#endif
 	}
 	return selected;
 }
@@ -122,9 +131,11 @@ bool nox::core::VideoStream::InitializeHardwareDevice()
 
 	switch (m_hwDeviceType)
 	{
+	#ifdef NOX_PLATFORM_WIN
 	case AV_HWDEVICE_TYPE_D3D11VA:
 		m_texInterop = std::make_unique<DXTextureInterop>();
 		break;
+	#endif
 	}
 	return true; 
 }

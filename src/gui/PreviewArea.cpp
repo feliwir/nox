@@ -1,7 +1,11 @@
 #include "PreviewArea.hpp"
+#include "Platform.hpp"
+
 #include <iostream>
-#include <gl/glew.h>
-#include <gl/wglew.h>
+#include <GL/glew.h>
+#ifdef NOX_PLATFORM_WIN
+#include <GL/wglew.h>
+#endif
 
 nox::gui::PreviewArea::PreviewArea()
 {
@@ -29,6 +33,7 @@ void nox::gui::PreviewArea::on_realize()
 		std::cerr << "Error: " << glewGetErrorString(err) << std::endl;
 	}
 
+	#ifdef NOX_PLATFORM_WIN
 	err = wglewInit();
 	if (GLEW_OK != err)
 	{
@@ -40,6 +45,7 @@ void nox::gui::PreviewArea::on_realize()
 	{
 		std::cout << "Found WGLEW_NV_DX_interop2 extension" << std::endl;
 	}
+	#endif
 }
 
 void nox::gui::PreviewArea::on_unrealize()

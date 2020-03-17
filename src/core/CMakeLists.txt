@@ -1,15 +1,21 @@
 find_package(FFMPEG REQUIRED)
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
 include(GenerateExportHeader)
 add_library(nox-core SHARED
-	DXTextureInterop.cpp DXTextureInterop.hpp
 	IStream.hpp
 	ITextureInterop.hpp
 	Media.cpp Media.hpp
 	Texture.cpp Texture.hpp
 	VideoStream.cpp VideoStream.hpp)
+
+if(WIN32)
+target_sources(nox-core	
+	DXTextureInterop.cpp DXTextureInterop.hpp)
+endif()
+
 generate_export_header(nox-core)
 
 target_include_directories(nox-core PUBLIC 
@@ -18,7 +24,7 @@ target_include_directories(nox-core PUBLIC
 	${FFMPEG_INCLUDE_DIRS})
 
 target_link_libraries(nox-core
-    GLEW::glew 
+    ${GLEW_LIBRARIES}
     OpenGL::GL
 	${FFMPEG_LIBRARIES})
 

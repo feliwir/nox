@@ -7,10 +7,6 @@
 #include "Platform.hpp"
 #ifdef NOX_PLATFORM_WIN
 #include "DXTextureInterop.hpp"
-AVHWDeviceType nox::core::VideoStream::m_hwDeviceType =
-    AV_HWDEVICE_TYPE_D3D11VA;
-#else
-AVHWDeviceType nox::core::VideoStream::m_hwDeviceType = AV_HWDEVICE_TYPE_VDPAU;
 #endif
 
 AVPixelFormat nox::core::VideoStream::GetHardwareFormat(
@@ -39,7 +35,7 @@ AVPixelFormat nox::core::VideoStream::GetHardwareFormat(
 
     if (selected == AV_PIX_FMT_NONE)
     {
-        video->m_usingHwDecode = false;
+        video->m_useHwDecode = false;
         AVPixelFormat fallback = avcodec_default_get_format(ctx, pix_fmts);
 
         std::cerr << "Failed to get HW surface format.\n";
@@ -51,8 +47,8 @@ AVPixelFormat nox::core::VideoStream::GetHardwareFormat(
         {
             auto fctx = (AVHWFramesContext*)ctx->hw_frames_ctx->data;
             auto hwctx = static_cast<AVD3D11VAFramesContext*>(fctx->hwctx);
-            hwctx->MiscFlags = D3D11_RESOURCE_MISC_SHARED_NTHANDLE |
-                               D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX;
+            //hwctx->MiscFlags = D3D11_RESOURCE_MISC_SHARED_NTHANDLE |
+            //                   D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX;
         }
 #else
 
@@ -65,7 +61,7 @@ nox::core::VideoStream::VideoStream(AVStream*& stream)
     : IStream(stream),
       m_hwDeviceCtx(nullptr),
       m_hwPixelFormat(AV_PIX_FMT_NONE),
-      m_usingHwDecode(true)
+      m_useHwDecode(true)
 {
     int ret = 0;
     AVCodecParameters* codecPar = m_stream->codecpar;
@@ -78,22 +74,33 @@ nox::core::VideoStream::VideoStream(AVStream*& stream)
     if (avcodec_parameters_to_context(m_codecCtx, stream->codecpar) < 0)
         return;
 
+    AVCodecHWConfig* bestMatch = nullptr;
     for (int i = 0;; i++)
     {
         const AVCodecHWConfig* config = avcodec_get_hw_config(m_codec, i);
         if (!config)
         {
-            fprintf(stderr, "Decoder %s does not support device type %s.\n",
-                    avcodec_get_name(codecPar->codec_id),
-                    av_hwdevice_get_type_name(m_hwDeviceType));
+            fprintf(stderr, "Decoder %s does not support any hw config.\n",
+                    avcodec_get_name(codecPar->codec_id));
             return;
         }
 
-        if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-            config->device_type == m_hwDeviceType)
+        if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_FRAMES_CTX) ||
+            (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX))
         {
             m_hwPixelFormat = config->pix_fmt;
-            break;
+            m_hwDeviceType = config->device_type;
+
+            // Stop searching when we find a HW Frames CTX since we prefer that
+            if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_FRAMES_CTX)
+            {
+                m_useHwFrames = true;
+                break;
+            }
+            else
+            {
+                m_useHwDevice = true;
+            }
         }
     }
     m_codecCtx->opaque = this;
@@ -130,8 +137,12 @@ nox::core::StreamType nox::core::VideoStream::GetType()
 
 bool nox::core::VideoStream::InitializeHardwareDevice()
 {
+    // Not required for non HW Frames
+    if (!m_useHwFrames)
+        return true;
+
     int err = 0;
-    AVDictionary* opts = NULL;             // "create" an empty dictionary
+    AVDictionary* opts = nullptr; // "create" an empty dictionary
     av_dict_set_int(&opts, "debug", 1, 0); // add an entry
 
     if ((err = av_hwdevice_ctx_create(&m_hwDeviceCtx, m_hwDeviceType, nullptr, opts,

@@ -27,9 +27,12 @@ class VideoStream : public IStream
 
     // Hardware decoding
     AVBufferRef* m_hwDeviceCtx;
-    static AVHWDeviceType m_hwDeviceType;
+    AVHWDeviceType m_hwDeviceType;
     AVPixelFormat m_hwPixelFormat;
-    bool m_usingHwDecode;
+    bool m_useHwFrames;
+    bool m_useHwDevice;
+
+    bool m_useHwDecode;
     std::unique_ptr<ITextureInterop> m_texInterop;
 };
 } // namespace nox::core

@@ -12,7 +12,7 @@ add_library(nox-core SHARED
 	VideoStream.cpp VideoStream.hpp)
 
 if(WIN32)
-target_sources(nox-core	
+target_sources(nox-core	PRIVATE
 	DXTextureInterop.cpp DXTextureInterop.hpp)
 endif()
 

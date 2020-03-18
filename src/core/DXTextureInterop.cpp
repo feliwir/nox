@@ -39,6 +39,7 @@ void nox::core::DXTextureInterop::Initialize(AVD3D11VAFramesContext* hwctx)
     assert(hr == S_OK);
     hr = pResource->CreateSharedHandle(NULL, DXGI_SHARED_RESOURCE_READ, NULL,
                                        &shared_handle);
+    pResource->Release();
 
     GLuint glHandle = m_texture->GetHandle();
     m_texture->Bind();

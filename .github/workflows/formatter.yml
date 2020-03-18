@@ -1,4 +1,4 @@
-name: Code Formatter
+name: Code Style Linter
 on: [push]
 
 jobs:

@@ -85,6 +85,10 @@ nox::core::VideoStream::VideoStream(AVStream*& stream)
             return;
         }
 
+        // Skip deprecated methods
+        if (config->methods & AV_CODEC_HW_CONFIG_METHOD_AD_HOC)
+            continue;
+
         if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_FRAMES_CTX) ||
             (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX))
         {

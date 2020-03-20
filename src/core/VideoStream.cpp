@@ -25,6 +25,7 @@ AVPixelFormat nox::core::VideoStream::GetHardwareFormat(
             if (avcodec_get_hw_frames_parameters(ctx, video->m_hwDeviceCtx, *p,
                                                  &new_frames_ctx) < 0)
             {
+                std::cerr << "Failed to get hw frames parameters." << std::endl;
                 break;
             }
             ctx->hw_frames_ctx = av_buffer_ref(new_frames_ctx);
@@ -46,14 +47,19 @@ AVPixelFormat nox::core::VideoStream::GetHardwareFormat(
         if (selected == AV_PIX_FMT_D3D11)
         {
             auto fctx = (AVHWFramesContext*)ctx->hw_frames_ctx->data;
+            fctx->initial_pool_size = 1;
             auto hwctx = static_cast<AVD3D11VAFramesContext*>(fctx->hwctx);
-            //hwctx->MiscFlags = D3D11_RESOURCE_MISC_SHARED_NTHANDLE |
-            //                   D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX;
+            hwctx->MiscFlags = D3D11_RESOURCE_MISC_SHARED;
         }
 #else
 
 #endif
+        if (av_hwframe_ctx_init(ctx->hw_frames_ctx) < 0)
+        {
+            std::cerr << "Failed to allocate hw frames." << std::endl;
+        }
     }
+
     return selected;
 }
 

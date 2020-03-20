@@ -130,16 +130,15 @@ void MainWindow::onFileOpen()
     dialog.add_button("_Open", Gtk::RESPONSE_OK);
 
     // Add filters, so that only certain file types can be selected:
+    auto filter_any = Gtk::FileFilter::create();
+    filter_any->set_name("Any files");
+    filter_any->add_pattern("*");
+    dialog.add_filter(filter_any);
 
     auto filter_movie = Gtk::FileFilter::create();
     filter_movie->set_name("Matroska files");
     filter_movie->add_mime_type("video/x-matroska");
     dialog.add_filter(filter_movie);
-
-    auto filter_any = Gtk::FileFilter::create();
-    filter_any->set_name("Any files");
-    filter_any->add_pattern("*");
-    dialog.add_filter(filter_any);
 
     // Show the dialog and wait for a user response:
     int result = dialog.run();

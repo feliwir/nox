@@ -43,6 +43,7 @@ void nox::core::Media::Decode()
 {
     AVPacket packet;
     int ret = 0;
+    av_log_set_level(AV_LOG_DEBUG);
 
     while (ret >= 0)
     {

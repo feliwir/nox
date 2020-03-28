@@ -152,7 +152,7 @@ bool nox::core::VideoStream::InitializeHardwareDevice()
         return true;
 
     int err = 0;
-    AVDictionary* opts = nullptr; // "create" an empty dictionary
+    AVDictionary* opts = nullptr;          // "create" an empty dictionary
     av_dict_set_int(&opts, "debug", 1, 0); // add an entry
 
     if ((err = av_hwdevice_ctx_create(&m_hwDeviceCtx, m_hwDeviceType, nullptr, opts,

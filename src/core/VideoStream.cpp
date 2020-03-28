@@ -6,7 +6,7 @@
 #include "HWUtil.hpp"
 #include "Platform.hpp"
 #ifdef NOX_PLATFORM_WIN
-#include "DXTextureInterop.hpp"
+#include "DXTextureMapper.hpp"
 #endif
 
 AVPixelFormat nox::core::VideoStream::GetHardwareFormat(
@@ -167,7 +167,7 @@ bool nox::core::VideoStream::InitializeHardwareDevice()
     {
 #ifdef NOX_PLATFORM_WIN
         case AV_HWDEVICE_TYPE_D3D11VA:
-            m_texInterop = std::make_unique<DXTextureInterop>();
+            m_texInterop = std::make_unique<DXTextureMapper>();
             break;
 #endif
     }

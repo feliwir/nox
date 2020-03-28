@@ -1,6 +1,6 @@
 #pragma once
 #include "IStream.hpp"
-#include "ITextureInterop.hpp"
+#include "ITextureMapper.hpp"
 
 namespace nox::core
 {
@@ -33,6 +33,6 @@ class VideoStream : public IStream
     bool m_useHwDevice;
 
     bool m_useHwDecode;
-    std::unique_ptr<ITextureInterop> m_texInterop;
+    std::unique_ptr<ITextureMapper> m_texInterop;
 };
 } // namespace nox::core

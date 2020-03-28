@@ -6,14 +6,14 @@ find_package(GLEW REQUIRED)
 include(GenerateExportHeader)
 add_library(nox-core SHARED
 	IStream.hpp
-	ITextureInterop.hpp
+	ITextureMapper.hpp
 	Media.cpp Media.hpp
 	Texture.cpp Texture.hpp
 	VideoStream.cpp VideoStream.hpp)
 
 if(WIN32)
 target_sources(nox-core	PRIVATE
-	DXTextureInterop.cpp DXTextureInterop.hpp)
+	DXTextureMapper.cpp DXTextureMapper.hpp)
 endif()
 
 generate_export_header(nox-core)

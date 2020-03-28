@@ -7,11 +7,11 @@
 
 namespace nox::core
 {
-class ITextureInterop
+class ITextureMapper
 {
    public:
     virtual bool IsValid() = 0;
-    virtual void Process(AVHWFramesContext* hwFramesContext) = 0;
+    virtual void Process(AVHWFramesContext* hwfctx) = 0;
     virtual std::shared_ptr<Texture> GetTexture() = 0;
 };
 } // namespace nox::core

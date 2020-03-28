@@ -1,5 +1,5 @@
 #pragma once
-#include "ITextureInterop.hpp"
+#include "ITextureMapper.hpp"
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -10,10 +10,10 @@ extern "C"
 
 namespace nox::core
 {
-class DXTextureInterop : public ITextureInterop
+class DXTextureMapper : public ITextureMapper
 {
    public:
-    DXTextureInterop();
+    DXTextureMapper();
 
     // Derived from ITextureInterop
     virtual bool IsValid() override;
@@ -21,9 +21,14 @@ class DXTextureInterop : public ITextureInterop
     virtual std::shared_ptr<Texture> GetTexture() override;
 
    protected:
-    void Initialize(AVD3D11VAFramesContext* fctx);
+    void Initialize(int width, int height, AVD3D11VAFramesContext* fctx);
+    void SetupDevice();
+    void SetupTarget(D3D11_TEXTURE2D_DESC& orig);
 
     ID3D11Device* m_device;
+    ID3D11DeviceContext* m_context;
+
+    ID3D11Texture2D* m_d3dTexture;
     HANDLE m_wglDXDevice;
     HANDLE m_glInteropTexture;
     std::shared_ptr<Texture> m_texture;
